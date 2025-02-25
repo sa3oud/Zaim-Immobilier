@@ -16,18 +16,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
-      - name: Prepare Pages
-        run: |
-          mkdir -p public
-          echo '<!DOCTYPE html>
-<html>
-<head><title>Zaim Immobilier</title></head>
-<body>
-    <h1>Zaim Immobilier</h1>
-    <p>Site deployed successfully</p>
-</body>
-</html>' > public/index.html
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
