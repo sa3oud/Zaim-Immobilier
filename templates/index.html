@@ -1,0 +1,226 @@
+{% extends "layout.html" %}
+
+{% block title %}ZAIM - Trouvez Votre Maison Idéale à Casablanca{% endblock %}
+
+{% block description %}ZAIM vous propose les meilleures offres immobilières à Casablanca. Achat, vente et location de biens immobiliers à prix compétitifs.{% endblock %}
+
+{% block content %}
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Trouvez Votre Maison de Rêve à Casablanca</h1>
+                <p>Découvrez des milliers de propriétés à vendre et à louer dans tout Casablanca. Votre maison idéale est à quelques clics.</p>
+                <button class="cta-button">Explorer les Propriétés</button>
+            </div>
+        </div>
+    </section>
+    
+    <div class="container">
+        <div class="search-bar">
+            <div class="search-type">
+                <label>
+                    <input type="radio" name="property-type" checked>
+                    Acheter
+                </label>
+                <label>
+                    <input type="radio" name="property-type">
+                    Louer
+                </label>
+            </div>
+            <input type="text" class="search-input" placeholder="Entrez un quartier ou un lieu...">
+            <button class="cta-button" onclick="scrollToContact()">Rechercher</button>
+        </div>
+    </div>
+    
+    <section class="properties">
+        <div class="container">
+            <h2 class="section-title">Propriétés en Vedette</h2>
+            <div class="property-grid">
+                <!-- Propriété 1 -->
+                <div class="property-card">
+                    <div class="property-image" style="background-image: url('{{ url_for('static', filename='images/property1.jpg') }}')"></div>
+                    <div class="property-content">
+                        <div class="badge badge-sale">À Vendre</div>
+                        <div class="property-price">725 000 DH</div>
+                        <div class="property-address">Quartier Anfa, Casablanca</div>
+                        <div class="property-features">
+                            <div class="property-feature">
+                                <span>3</span> Chambres
+                            </div>
+                            <div class="property-feature">
+                                <span>2</span> SdB
+                            </div>
+                            <div class="property-feature">
+                                <span>170</span> m²
+                            </div>
+                        </div>
+                        <button class="view-button">Voir la Propriété</button>
+                    </div>
+                </div>
+                
+                <!-- Propriété 2 -->
+                <div class="property-card">
+                    <div class="property-image" style="background-image: url('{{ url_for('static', filename='images/property2.jpg') }}')"></div>
+                    <div class="property-content">
+                        <div class="badge badge-rent">À Louer</div>
+                        <div class="property-price">2 250 DH/mois</div>
+                        <div class="property-address">Boulevard Mohammed VI, Casablanca</div>
+                        <div class="property-features">
+                            <div class="property-feature">
+                                <span>2</span> Chambres
+                            </div>
+                            <div class="property-feature">
+                                <span>2</span> SdB
+                            </div>
+                            <div class="property-feature">
+                                <span>110</span> m²
+                            </div>
+                        </div>
+                        <button class="view-button">Voir la Propriété</button>
+                    </div>
+                </div>
+                
+                <!-- Propriété 3 -->
+                <div class="property-card">
+                    <div class="property-image" style="background-image: url('{{ url_for('static', filename='images/property3.jpg') }}')"></div>
+                    <div class="property-content">
+                        <div class="badge badge-sale">À Vendre</div>
+                        <div class="property-price">945 000 DH</div>
+                        <div class="property-address">Quartier CIL, Casablanca</div>
+                        <div class="property-features">
+                            <div class="property-feature">
+                                <span>4</span> Chambres
+                            </div>
+                            <div class="property-feature">
+                                <span>3</span> SdB
+                            </div>
+                            <div class="property-feature">
+                                <span>220</span> m²
+                            </div>
+                        </div>
+                        <button class="view-button">Voir la Propriété</button>
+                    </div>
+                </div>
+                
+                <!-- Propriété 4 -->
+                <div class="property-card">
+                    <div class="property-image" style="background-image: url('{{ url_for('static', filename='images/property4.jpg') }}')"></div>
+                    <div class="property-content">
+                        <div class="badge badge-rent">À Louer</div>
+                        <div class="property-price">1 600 DH/mois</div>
+                        <div class="property-address">Quartier Gauthier, Casablanca</div>
+                        <div class="property-features">
+                            <div class="property-feature">
+                                <span>1</span> Chambre
+                            </div>
+                            <div class="property-feature">
+                                <span>1</span> SdB
+                            </div>
+                            <div class="property-feature">
+                                <span>80</span> m²
+                            </div>
+                        </div>
+                        <button class="view-button">Voir la Propriété</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Pourquoi Choisir ZAIM</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Recherche Facile</h3>
+                    <p>Trouvez votre maison idéale avec nos outils de recherche puissants et intuitifs. Filtrez par prix, emplacement, et plus.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Meilleurs Prix</h3>
+                    <p>Nous négocions les meilleures offres pour nos clients. Économisez sur votre prochain achat ou location immobilière.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Analyses du Marché</h3>
+                    <p>Accédez aux données et tendances du marché casablancais en temps réel pour prendre des décisions éclairées.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🤝</div>
+                    <h3>Experts Immobiliers</h3>
+                    <p>Nos professionnels de l'immobilier sont là pour vous guider à chaque étape de votre parcours à Casablanca.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="contact-section" class="contact">
+        <div class="container">
+            <h2 class="section-title">Contactez-Nous</h2>
+            <div class="contact-container">
+                <div class="contact-form-container">
+                    <form id="contact-form" class="contact-form" method="post" action="{{ url_for('contact') }}">
+                        <div class="form-group">
+                            <label for="name">Nom Complet</label>
+                            <input type="text" id="name" name="name" placeholder="Votre nom" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" placeholder="Votre email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Téléphone</label>
+                            <input type="tel" id="phone" name="phone" placeholder="+212 6 XX XX XX XX" required pattern="\+212 6 \d{2} \d{2} \d{2} \d{2}">
+                            <small class="form-help">Format: +212 6 XX XX XX XX</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="whatsapp">WhatsApp</label>
+                            <input type="tel" id="whatsapp" name="whatsapp" placeholder="+212 6 XX XX XX XX" pattern="\+212 6 \d{2} \d{2} \d{2} \d{2}">
+                            <small class="form-help">Facultatif, si différent du téléphone</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="property-interest">Intéressé par</label>
+                            <select id="property-interest" name="property-interest">
+                                <option value="achat">Acheter un bien</option>
+                                <option value="location">Louer un bien</option>
+                                <option value="vente">Vendre un bien</option>
+                                <option value="estimation">Estimation gratuite</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Votre demande</label>
+                            <textarea id="message" name="message" placeholder="Décrivez votre recherche ou votre demande..." rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="submit-button">Envoyer ma demande</button>
+                    </form>
+                </div>
+                <div class="contact-info">
+                    <div class="contact-info-card">
+                        <div class="contact-icon">📍</div>
+                        <h3>Notre Agence</h3>
+                        <p>Boulevard d'Anfa, 253<br>Casablanca, Maroc</p>
+                    </div>
+                    <div class="contact-info-card">
+                        <div class="contact-icon">📞</div>
+                        <h3>Téléphone</h3>
+                        <p>+212 6 13 50 96 60</p>
+                    </div>
+                    <div class="contact-info-card">
+                        <div class="contact-icon">✉️</div>
+                        <h3>Email</h3>
+                        <p>info@zaim.ma</p>
+                    </div>
+                    <div class="contact-info-card">
+                        <div class="contact-icon">🕒</div>
+                        <h3>Horaires</h3>
+                        <p>Lun - Ven: 9h - 18h<br>Sam: 9h - 13h</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
