@@ -1,4 +1,4 @@
-name: Deploy Flask App to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -20,14 +20,25 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install flask
+          pip install jinja2
 
-      - name: Prepare deployment directory
+      - name: Prepare static site
         run: |
           mkdir -p public
-          cp templates/index.html public/index.html
-          cp -r static public/
-          cp app.py public/
+          
+          # Convert Jinja2 template to static HTML
+          python3 -c "
+from jinja2 import Environment, FileSystemLoader
+env = Environment(loader=FileSystemLoader('templates'))
+template = env.get_template('index.html')
+rendered_html = template.render()
+with open('public/index.html', 'w') as f:
+    f.write(rendered_html)
+"
+          
+          # Copy static files
+          mkdir -p public/static
+          cp -r static/* public/static/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
