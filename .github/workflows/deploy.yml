@@ -3,76 +3,14 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-  workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v3
+      - uses: actions/checkout@v3
+      - uses: actions/configure-pages@v3
+      - uses: actions/upload-pages-artifact@v2
         with:
-          python-version: '3.9'
-
-      - name: Prepare static site
-        run: |
-          mkdir -p public/static
-          
-          # Debug: Show contents of templates directory
-          echo "Contents of templates directory:"
-          ls -l templates
-          
-          # Convert template
-          python3 -c "
-import re
-
-def convert_template(input_file, output_file):
-    with open(input_file, 'r', encoding='utf-8') as f:
-        content = f.read()
-    
-    # Remove Jinja2 block tags
-    content = re.sub(r'{%\s*extends\s*\".*?\"%}', '<!DOCTYPE html>\n<html lang=\"fr\">', content)
-    content = re.sub(r'{%\s*block\s*\w+\s*%}', '', content)
-    content = re.sub(r'{%\s*endblock\s*%}', '', content)
-    
-    # Replace url_for with static paths
-    content = re.sub(r'{{ url_for\(\'static\', filename=\'(.*?)\'\) }}', r'static/\1', content)
-    
-    # Fix background image URLs
-    content = re.sub(r'background-image: url\(\'(.*?)\'\)', r'background-image: url(\"\1\")', content)
-    
-    # Add closing html tag
-    content += '\n</html>'
-    
-    with open(output_file, 'w', encoding='utf-8') as f:
-        f.write(content)
-
-convert_template('templates/index.html', 'public/index.html')
-"
-          
-          # Debug: Show contents of converted index.html
-          echo "Contents of converted index.html:"
-          cat public/index.html
-          
-          # Copy static directories
-          mkdir -p public/static/css
-          mkdir -p public/static/js
-          mkdir -p public/static/images
-          
-          cp -r static/css/* public/static/css/ || echo "No CSS files found"
-          cp -r static/js/* public/static/js/ || echo "No JS files found"
-          cp -r static/images/* public/static/images/ || echo "No image files found"
-          
-          # Debug: Show contents of public directory
-          echo "Contents of public directory:"
-          ls -lR public
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
-          publish_branch: gh-pages
+          path: .
+      - uses: actions/deploy-pages@v2
