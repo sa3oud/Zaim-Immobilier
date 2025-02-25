@@ -26,7 +26,6 @@ jobs:
         run: |
           mkdir -p public/static
           
-          # Convert template
           python3 -c "
 import re
 
@@ -73,7 +72,6 @@ def convert_template(input_file, output_file):
 convert_template('templates/index.html', 'public/index.html')
 "
           
-          # Copy static files
           cp -r static/* public/static/
           
           echo "Contents of public directory:"
