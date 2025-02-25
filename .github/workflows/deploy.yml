@@ -14,12 +14,29 @@ jobs:
 
       - name: Prepare static site
         run: |
+          mkdir -p public
+          
+          # Create a simple index.html if not exists
+          if [ ! -f public/index.html ]; then
+            echo "<!DOCTYPE html>
+<html>
+<head>
+    <title>Zaim Immobilier</title>
+</head>
+<body>
+    <h1>Zaim Immobilier</h1>
+    <p>Site is being prepared</p>
+</body>
+</html>" > public/index.html
+          fi
+
+          # Convert Jinja2 template
+          sed 's|{{ url_for('\''static'\'', filename='\''\([^'\'']*\)'\'')|"static/\1"|g' templates/index.html > public/index.html
+
+          # Ensure static directories exist
           mkdir -p public/static/css
           mkdir -p public/static/js
           mkdir -p public/static/images
-
-          # Replace Jinja2 URL references with static paths
-          sed 's|{{ url_for('\''static'\'', filename='\''\([^'\'']*\)'\'')|"static/\1"|g' templates/index.html > public/index.html
 
           # Copy static files
           cp -r static/css/* public/static/css/ || true
