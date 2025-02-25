@@ -92,7 +92,7 @@ nav {
 
 .hero {
     height: 70vh;
-    background-image: url('../images/IMAGES11.jpg');
+    background-image: url('/static/images/IMAGES11.jpg');
     background-size: cover;
     background-position: center;
     display: flex;
@@ -491,116 +491,6 @@ footer {
     color: #9ca3af;
 }
 
-/* Styles pour les messages flash */
-.flash-messages {
-    margin-top: 2rem;
-}
-
-.flash-message {
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    font-weight: 500;
-}
-
-.flash-success {
-    background-color: #e6ffed;
-    color: #28a745;
-    border-left: 4px solid #28a745;
-}
-
-.flash-error {
-    background-color: #ffdce0;
-    color: #dc3545;
-    border-left: 4px solid #dc3545;
-}
-
-.flash-warning {
-    background-color: #fff3cd;
-    color: #ffc107;
-    border-left: 4px solid #ffc107;
-}
-
-.flash-info {
-    background-color: #e6f7ff;
-    color: #17a2b8;
-    border-left: 4px solid #17a2b8;
-}
-
-/* Animation pour le formulaire de contact */
-@keyframes highlight-form {
-    0% { box-shadow: 0 0 0 0 rgba(84, 101, 255, 0.4); }
-    70% { box-shadow: 0 0 0 10px rgba(84, 101, 255, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(84, 101, 255, 0); }
-}
-
-.highlight {
-    animation: highlight-form 1.5s ease-in-out;
-}
-
-/* Styles pour la page de succès de contact */
-.success-page {
-    padding: 6rem 0;
-    background-color: #f6f8ff;
-    min-height: 70vh;
-    display: flex;
-    align-items: center;
-}
-
-.success-content {
-    background-color: white;
-    padding: 3rem;
-    border-radius: 16px;
-    box-shadow: var(--shadow);
-    text-align: center;
-    max-width: 700px;
-    margin: 0 auto;
-}
-
-.success-icon {
-    font-size: 4rem;
-    margin-bottom: 1.5rem;
-}
-
-.success-title {
-    color: var(--primary);
-    margin-bottom: 1.5rem;
-}
-
-.success-message {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-}
-
-.success-details {
-    color: #6c757d;
-    margin-bottom: 2rem;
-}
-
-.success-actions {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-.secondary-button {
-    background-color: white;
-    color: var(--primary);
-    border: 2px solid var(--primary);
-    padding: 0.7rem 1.5rem;
-    border-radius: 50px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-decoration: none;
-}
-
-.secondary-button:hover {
-    background-color: #f0f4ff;
-    transform: translateY(-2px);
-}
-
 /* Responsive */
 @media (max-width: 992px) {
     .contact-container {
@@ -632,34 +522,21 @@ footer {
     .property-grid {
         grid-template-columns: 1fr;
     }
-    
-    .nav-links {
-        display: none;
-    }
-    
-    .success-content {
-        padding: 2rem 1rem;
-    }
 }
 
 @media (max-width: 576px) {
     .contact-info {
         grid-template-columns: 1fr;
     }
-    
-    .footer-content {
-        grid-template-columns: 1fr;
-    }
-    
-    .hero h1 {
-        font-size: 1.8rem;
-    }
-    
-    .hero p {
-        font-size: 1rem;
-    }
-    
-    .section-title {
-        font-size: 1.5rem;
-    }
+}
+
+/* Animation pour le formulaire de contact */
+@keyframes highlight-form {
+    0% { box-shadow: 0 0 0 0 rgba(84, 101, 255, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(84, 101, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(84, 101, 255, 0); }
+}
+
+.highlight {
+    animation: highlight-form 1.5s ease-in-out;
 }
