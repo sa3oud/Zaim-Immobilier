@@ -14,14 +14,12 @@ jobs:
 
       - name: Prepare static site
         run: |
-          mkdir -p public
-          sed 's|{{ url_for('\''static'\'', filename='\''\([^'\'']*\)'\'')|"static/\1"|g' templates/index.html > public/index.html
-          
-          # Copy static directories
           mkdir -p public/static/css
           mkdir -p public/static/js
           mkdir -p public/static/images
-          
+
+          sed 's|{{ url_for('\''static'\'', filename='\''\([^'\'']*\)'\'')|"static/\1"|g' templates/index.html > public/index.html
+
           cp -r static/css/* public/static/css/ || true
           cp -r static/js/* public/static/js/ || true
           cp -r static/images/* public/static/images/ || true
