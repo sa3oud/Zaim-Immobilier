@@ -18,8 +18,10 @@ jobs:
           mkdir -p public/static/js
           mkdir -p public/static/images
 
+          # Replace Jinja2 URL references with static paths
           sed 's|{{ url_for('\''static'\'', filename='\''\([^'\'']*\)'\'')|"static/\1"|g' templates/index.html > public/index.html
 
+          # Copy static files
           cp -r static/css/* public/static/css/ || true
           cp -r static/js/* public/static/js/ || true
           cp -r static/images/* public/static/images/ || true
