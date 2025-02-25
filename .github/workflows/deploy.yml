@@ -1,4 +1,4 @@
-name: Debug and Deploy to GitHub Pages
+name: Deploy to GitHub Pages with Debugging
 
 on:
   push:
@@ -17,40 +17,35 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
       
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-      
-      - name: Debug Repository Structure
+      - name: Debug Project Structure
         run: |
-          echo "Repository contents:"
+          echo "Project Directory Contents:"
           ls -R
           
-          echo "\n\nTemplates directory:"
-          ls -l templates
-          
-          echo "\n\nStatic directory:"
+          echo "\n\n--- Static Directory ---"
           ls -l static
+          
+          echo "\n\n--- Templates Directory ---"
+          ls -l templates
       
-      - name: Convert Template
+      - name: Prepare Static Site
         run: |
+          mkdir -p public
+          
+          # Convert Jinja2 template to static HTML
           python3 -c "
 import re
-import os
 
 def convert_template(input_file, output_file):
     with open(input_file, 'r', encoding='utf-8') as f:
         content = f.read()
-    
-    print(f'Original content length: {len(content)} characters')
     
     # Remove Jinja2 block tags
     content = re.sub(r'{%\s*extends\s*\".*?\"%}', '<!DOCTYPE html>\n<html lang=\"fr\">', content)
     content = re.sub(r'{%\s*block\s*\w+\s*%}', '', content)
     content = re.sub(r'{%\s*endblock\s*%}', '', content)
     
-    # URL conversion
+    # Replace url_for with static paths
     content = re.sub(r'{{ url_for\(\'static\', filename=\'(.*?)\'\) }}', r'static/\1', content)
     
     # Fix background image URLs
@@ -59,30 +54,15 @@ def convert_template(input_file, output_file):
     # Add closing html tag
     content += '\n</html>'
     
-    print(f'Converted content length: {len(content)} characters')
-    
     with open(output_file, 'w', encoding='utf-8') as f:
         f.write(content)
-    
-    print('First 500 characters of converted content:')
-    print(content[:500])
 
-# Ensure public directory exists
-os.makedirs('public', exist_ok=True)
-
-# Run conversion
 convert_template('templates/index.html', 'public/index.html')
 "
-      
-      - name: Copy Static Files
-        run: |
-          mkdir -p public/static/css
-          mkdir -p public/static/js
-          mkdir -p public/static/images
           
-          cp -r static/css/* public/static/css/ || echo "No CSS files found"
-          cp -r static/js/* public/static/js/ || echo "No JS files found"
-          cp -r static/images/* public/static/images/ || echo "No image files found"
+          # Copy static files
+          mkdir -p public/static
+          cp -r static/* public/static/
           
           echo "Contents of public directory:"
           ls -lR public
