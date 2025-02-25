@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages with Debugging
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -11,28 +11,22 @@ permissions:
   id-token: write
 
 jobs:
-  debug-and-deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v4
-      
-      - name: Debug Project Structure
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Prepare static site
         run: |
-          echo "Project Directory Contents:"
-          ls -R
+          mkdir -p public/static
           
-          echo "\n\n--- Static Directory ---"
-          ls -l static
-          
-          echo "\n\n--- Templates Directory ---"
-          ls -l templates
-      
-      - name: Prepare Static Site
-        run: |
-          mkdir -p public
-          
-          # Convert Jinja2 template to static HTML
+          # Convert template
           python3 -c "
 import re
 
@@ -40,41 +34,53 @@ def convert_template(input_file, output_file):
     with open(input_file, 'r', encoding='utf-8') as f:
         content = f.read()
     
-    # Remove Jinja2 block tags
-    content = re.sub(r'{%\s*extends\s*\".*?\"%}', '<!DOCTYPE html>\n<html lang=\"fr\">', content)
-    content = re.sub(r'{%\s*block\s*\w+\s*%}', '', content)
-    content = re.sub(r'{%\s*endblock\s*%}', '', content)
+    html_template = f'''<!DOCTYPE html>
+<html lang=\"fr\">
+<head>
+    <meta charset=\"UTF-8\">
+    <title>ZAIM - Trouvez Votre Maison Idéale à Casablanca</title>
+    <link rel=\"stylesheet\" href=\"static/css/style.css\">
+    <link rel=\"stylesheet\" href=\"static/css/styles.css\">
+</head>
+<body>
+{content}
+    <script src=\"static/js/script.js\"></script>
+</body>
+</html>
+'''
     
-    # Replace url_for with static paths
-    content = re.sub(r'{{ url_for\(\'static\', filename=\'(.*?)\'\) }}', r'static/\1', content)
+    html_template = re.sub(r'{%\s*extends\s*\".*?\"\s*%}', '', html_template)
+    html_template = re.sub(r'{%\s*block\s*\w+\s*%}', '', html_template)
+    html_template = re.sub(r'{%\s*endblock\s*%}', '', html_template)
     
-    # Fix background image URLs
-    content = re.sub(r'background-image: url\(\'(.*?)\'\)', r'background-image: url(\"\1\")', content)
+    html_template = re.sub(
+        r'{{ url_for\(\'static\', filename=\'(.*?)\'\) }}', 
+        r'static/\1', 
+        html_template
+    )
     
-    # Add closing html tag
-    content += '\n</html>'
+    html_template = re.sub(
+        r'background-image: url\(""(.*?)""\)', 
+        r'background-image: url(\"static/images/\1\")', 
+        html_template
+    )
+    
+    html_template = re.sub(r'{{.*?}}', '', html_template)
     
     with open(output_file, 'w', encoding='utf-8') as f:
-        f.write(content)
+        f.write(html_template)
 
 convert_template('templates/index.html', 'public/index.html')
 "
           
           # Copy static files
-          mkdir -p public/static
           cp -r static/* public/static/
           
           echo "Contents of public directory:"
           ls -lR public
-      
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-      
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './public'
-      
+
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
