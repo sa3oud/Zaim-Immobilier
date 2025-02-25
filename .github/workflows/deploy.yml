@@ -1,16 +1,100 @@
-name: Deploy to GitHub Pages
+name: Debug and Deploy to GitHub Pages
 
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
-  deploy:
+  debug-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v4
-      - uses: actions/upload-pages-artifact@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          path: public
-      - uses: actions/deploy-pages@v4
+          python-version: '3.9'
+      
+      - name: Debug Repository Structure
+        run: |
+          echo "Repository contents:"
+          ls -R
+          
+          echo "\n\nTemplates directory:"
+          ls -l templates
+          
+          echo "\n\nStatic directory:"
+          ls -l static
+      
+      - name: Convert Template
+        run: |
+          python3 -c "
+import re
+import os
+
+def convert_template(input_file, output_file):
+    with open(input_file, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    print(f'Original content length: {len(content)} characters')
+    
+    # Remove Jinja2 block tags
+    content = re.sub(r'{%\s*extends\s*\".*?\"%}', '<!DOCTYPE html>\n<html lang=\"fr\">', content)
+    content = re.sub(r'{%\s*block\s*\w+\s*%}', '', content)
+    content = re.sub(r'{%\s*endblock\s*%}', '', content)
+    
+    # URL conversion
+    content = re.sub(r'{{ url_for\(\'static\', filename=\'(.*?)\'\) }}', r'static/\1', content)
+    
+    # Fix background image URLs
+    content = re.sub(r'background-image: url\(\'(.*?)\'\)', r'background-image: url(\"\1\")', content)
+    
+    # Add closing html tag
+    content += '\n</html>'
+    
+    print(f'Converted content length: {len(content)} characters')
+    
+    with open(output_file, 'w', encoding='utf-8') as f:
+        f.write(content)
+    
+    print('First 500 characters of converted content:')
+    print(content[:500])
+
+# Ensure public directory exists
+os.makedirs('public', exist_ok=True)
+
+# Run conversion
+convert_template('templates/index.html', 'public/index.html')
+"
+      
+      - name: Copy Static Files
+        run: |
+          mkdir -p public/static/css
+          mkdir -p public/static/js
+          mkdir -p public/static/images
+          
+          cp -r static/css/* public/static/css/ || echo "No CSS files found"
+          cp -r static/js/* public/static/js/ || echo "No JS files found"
+          cp -r static/images/* public/static/images/ || echo "No image files found"
+          
+          echo "Contents of public directory:"
+          ls -lR public
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './public'
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
