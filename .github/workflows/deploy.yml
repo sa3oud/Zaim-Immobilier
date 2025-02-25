@@ -19,43 +19,56 @@ jobs:
 
       - name: Prepare static site
         run: |
-          mkdir -p public
+          mkdir -p public/static
           
-          # Convert template to static HTML
+          # Debug: Show contents of templates directory
+          echo "Contents of templates directory:"
+          ls -l templates
+          
+          # Convert template
           python3 -c "
 import re
 
 def convert_template(input_file, output_file):
-    with open(input_file, 'r') as f:
+    with open(input_file, 'r', encoding='utf-8') as f:
         content = f.read()
     
     # Remove Jinja2 block tags
-    content = re.sub(r'{%\s*\w+\s*.*?%}', '', content)
+    content = re.sub(r'{%\s*extends\s*\".*?\"%}', '<!DOCTYPE html>\n<html lang=\"fr\">', content)
+    content = re.sub(r'{%\s*block\s*\w+\s*%}', '', content)
+    content = re.sub(r'{%\s*endblock\s*%}', '', content)
     
     # Replace url_for with static paths
     content = re.sub(r'{{ url_for\(\'static\', filename=\'(.*?)\'\) }}', r'static/\1', content)
     
-    # Replace problematic image paths
-    content = re.sub(r'url\(\'static/images/(.*?)\'\)', r'url(\"static/images/\1\")', content)
+    # Fix background image URLs
+    content = re.sub(r'background-image: url\(\'(.*?)\'\)', r'background-image: url(\"\1\")', content)
     
-    # Remove any remaining Jinja2 variable tags
-    content = re.sub(r'{{.*?}}', '', content)
+    # Add closing html tag
+    content += '\n</html>'
     
-    with open(output_file, 'w') as f:
+    with open(output_file, 'w', encoding='utf-8') as f:
         f.write(content)
 
 convert_template('templates/index.html', 'public/index.html')
 "
           
-          # Ensure static directories exist
+          # Debug: Show contents of converted index.html
+          echo "Contents of converted index.html:"
+          cat public/index.html
+          
+          # Copy static directories
           mkdir -p public/static/css
           mkdir -p public/static/js
           mkdir -p public/static/images
-
-          # Copy static files
-          cp -r static/css/* public/static/css/ || true
-          cp -r static/js/* public/static/js/ || true
-          cp -r static/images/* public/static/images/ || true
+          
+          cp -r static/css/* public/static/css/ || echo "No CSS files found"
+          cp -r static/js/* public/static/js/ || echo "No JS files found"
+          cp -r static/images/* public/static/images/ || echo "No image files found"
+          
+          # Debug: Show contents of public directory
+          echo "Contents of public directory:"
+          ls -lR public
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
